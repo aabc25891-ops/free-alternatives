@@ -5,8 +5,19 @@ import { notFound } from "next/navigation";
 import { sql } from "@/lib/db";
 import { Price } from "@/app/components/CurrencyProvider";
 import AlternativeList, { type Alt } from "@/app/components/AlternativeList";
+import type { Metadata } from "next";
 
 type Props = { params: Promise<{ slug: string }> };
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params;
+  const rows = await sql`SELECT name FROM apps WHERE slug = ${slug}`;
+  if (rows.length === 0) return { title: "App not found" };
+  const name = rows[0].name as string;
+  return {
+    title: `Free alternatives to ${name}`,
+    description: `Community-verified free and open-source alternatives to ${name}. See what you can save every year.`,
+  };
+}
 
 async function Content({ params }: Props) {
   const { slug } = await params;
