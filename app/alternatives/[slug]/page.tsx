@@ -1,116 +1,79 @@
 import { Suspense } from "react";
 import Link from "next/link";
+import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import { sql } from "@/lib/db";
-import { castVote } from "@/app/actions";
+import { Price } from "@/app/components/CurrencyProvider";
+import AlternativeList, { type Alt } from "@/app/components/AlternativeList";
 
-type Props = {
-  params: Promise<{ slug: string }>;
-  searchParams: Promise<{ filter?: string }>;
-};
+type Props = { params: Promise<{ slug: string }> };
 
-const pills = [
-  { key: "", label: "All" },
-  { key: "open", label: "Open Source" },
-  { key: "nosignup", label: "No Sign-Up" },
-];
-
-async function Alternatives({ params, searchParams }: Props) {
+async function Content({ params }: Props) {
   const { slug } = await params;
-  const { filter = "" } = await searchParams;
-  const apps = await sql`SELECT id, name FROM apps WHERE slug = ${slug}`;
+  const apps = await sql`
+    SELECT id, name, price_usd, price_inr FROM apps WHERE slug = ${slug}`;
   if (apps.length === 0) notFound();
   const app = apps[0];
-  const alts = await sql`
+
+  const voterId = (await cookies()).get("voter_id")?.value ?? "";
+  const rows = await sql`
     SELECT a.*,
-      COUNT(v.id) FILTER (WHERE v.vote = 'free') AS free_votes,
-      COUNT(v.id) FILTER (WHERE v.vote = 'paywall') AS paywall_votes
+      COUNT(v.id) FILTER (WHERE v.vote = 'free')::int AS free_votes,
+      COUNT(v.id) FILTER (WHERE v.vote = 'paywall')::int AS paywall_votes,
+      (SELECT mv.vote FROM votes mv
+        WHERE mv.alternative_id = a.id AND mv.voter_id = ${voterId}) AS my_vote
     FROM alternatives a
     LEFT JOIN votes v ON v.alternative_id = a.id
     WHERE a.app_id = ${app.id}
     GROUP BY a.id
     ORDER BY a.name`;
 
-  const shown = alts.filter((a) =>
-    filter === "open" ? a.open_source : filter === "nosignup" ? a.no_signup : true
-  );
+  const alts: Alt[] = rows.map((r) => ({
+    id: r.id as number,
+    name: r.name as string,
+    url: r.url as string,
+    pitch: r.pitch as string,
+    free_limit: r.free_limit as string,
+    platforms: r.platforms as string[],
+    open_source: r.open_source as boolean,
+    no_signup: r.no_signup as boolean,
+    free_votes: r.free_votes as number,
+    paywall_votes: r.paywall_votes as number,
+    myVote: (r.my_vote as "free" | "paywall" | null) ?? null,
+  }));
+
+  const hasPrice = app.price_usd != null && app.price_inr != null;
 
   return (
-    <>
-      <h1 className="text-2xl font-bold text-gray-900 sm:text-4xl">
-        Free alternatives to {app.name}
+    <div className="enter">
+      <h1 className="mt-2 text-3xl font-extrabold tracking-tight sm:text-5xl">
+        Free alternatives to {app.name as string}
       </h1>
-
-      <div className="mt-4 flex flex-wrap gap-2">
-        {pills.map((p) => (
-          <Link
-            key={p.label}
-            href={p.key ? `/alternatives/${slug}?filter=${p.key}` : `/alternatives/${slug}`}
-            className={`rounded-full px-4 py-1 text-sm font-semibold ${
-              filter === p.key ? "bg-green-600 text-white" : "bg-white text-gray-700 shadow"
-            }`}
-          >
-            {p.label}
-          </Link>
-        ))}
-      </div>
-
-      {shown.length === 0 && (
-        <p className="mt-6 text-gray-500">No tools match this filter.</p>
-      )}
-
-      <div className="mt-6 grid gap-4 md:grid-cols-2">
-        {shown.map((a) => (
-          <div key={a.id} className="rounded-lg bg-white p-5 shadow">
-            <p className="text-lg font-semibold text-gray-900">{a.name}</p>
-            <p className="text-gray-600">{a.pitch}</p>
-            <p className="mt-2 text-sm text-green-700">{a.free_limit}</p>
-            <p className="text-sm text-gray-500">{a.platforms.join(" · ")}</p>
-            <p className="mt-2 text-sm text-gray-700">
-              ✅ {Number(a.free_votes)} still free · 🚩 {Number(a.paywall_votes)} paywall
-            </p>
-            <form action={castVote} className="mt-3 flex flex-wrap gap-2">
-              <input type="hidden" name="alternativeId" value={a.id} />
-              <input type="hidden" name="slug" value={slug} />
-              <button
-                name="vote"
-                value="free"
-                className="rounded-lg border border-green-600 px-3 py-1 text-sm text-green-700"
-              >
-                ✅ Still Free
-              </button>
-              <button
-                name="vote"
-                value="paywall"
-                className="rounded-lg border border-red-500 px-3 py-1 text-sm text-red-600"
-              >
-                🚩 Hidden Paywall
-              </button>
-            </form>
-            <a
-              href={a.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-3 inline-block rounded-lg bg-green-600 px-4 py-2 font-semibold text-white"
-            >
-              Launch Free Tool ↗
-            </a>
-          </div>
-        ))}
-      </div>
-    </>
+      <p className="mt-3 text-lg text-slate-600">
+        {hasPrice ? (
+          <>
+            {app.name as string} costs about{" "}
+            <Price usd={Number(app.price_usd)} inr={Number(app.price_inr)} /> per
+            month. These tools cost nothing.
+          </>
+        ) : (
+          "These tools cost nothing."
+        )}
+      </p>
+      <AlternativeList alts={alts} slug={slug} />
+    </div>
   );
 }
 
-export default function Page({ params, searchParams }: Props) {
+export default function Page({ params }: Props) {
   return (
-    <main className="min-h-screen bg-gray-50 px-4 py-10 sm:px-6 max-w-5xl mx-auto">
-      <Link href="/" className="text-sm text-gray-500">← Back</Link>
-      <div className="mt-4">
-        <Suspense fallback={<p className="text-gray-500">Loading...</p>}>
-          <Alternatives params={params} searchParams={searchParams} />
-        </Suspense>
-      </div>
+    <main className="mx-auto max-w-6xl px-5 pb-16 pt-8">
+      <Link href="/" className="inline-flex min-h-11 items-center font-semibold text-slate-600">
+        ← All apps
+      </Link>
+      <Suspense fallback={<p className="mt-6 text-slate-500">Loading...</p>}>
+        <Content params={params} />
+      </Suspense>
     </main>
   );
 }

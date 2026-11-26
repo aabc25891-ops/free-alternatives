@@ -1,32 +1,32 @@
 import { Suspense } from "react";
-import Link from "next/link";
 import { sql } from "@/lib/db";
-import Calculator from "./Calculator";
+import Calculator, { type CalcApp } from "@/app/components/Calculator";
 
 async function Loader() {
   const rows = await sql`
-    SELECT id, name, price_usd, price_inr FROM apps
-    WHERE price_usd IS NOT NULL AND price_inr IS NOT NULL ORDER BY name`;
-  const apps = rows.map((r) => ({
+    SELECT id, name, category, price_usd, price_inr FROM apps
+    WHERE price_usd IS NOT NULL AND price_inr IS NOT NULL
+    ORDER BY name`;
+  const apps: CalcApp[] = rows.map((r) => ({
     id: r.id as number,
     name: r.name as string,
-    price_usd: Number(r.price_usd),
-    price_inr: Number(r.price_inr),
+    category: r.category as string,
+    usd: Number(r.price_usd),
+    inr: Number(r.price_inr),
   }));
   return <Calculator apps={apps} />;
 }
 
 export default function Page() {
   return (
-    <main className="min-h-screen bg-gray-50 px-4 py-10 sm:px-6 max-w-3xl mx-auto">
-      <Link href="/" className="text-sm text-gray-500">← Back</Link>
-      <h1 className="mt-4 text-2xl font-bold text-gray-900 sm:text-4xl">
-        Subscription Savings Calculator
+    <main className="enter mx-auto max-w-3xl px-5 pb-16 pt-10">
+      <h1 className="text-3xl font-extrabold tracking-tight sm:text-5xl">
+        Subscription savings calculator
       </h1>
-      <p className="mt-2 mb-6 text-gray-600">
-        Tick the paid apps you use and see how much you save with free tools.
+      <p className="mt-3 text-lg text-slate-600">
+        Tick the paid apps you use and see what you could save each year.
       </p>
-      <Suspense fallback={<p className="text-gray-500">Loading...</p>}>
+      <Suspense fallback={<p className="mt-6 text-slate-500">Loading...</p>}>
         <Loader />
       </Suspense>
     </main>

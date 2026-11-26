@@ -1,3 +1,26 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .pill { @apply inline-flex min-h-11 items-center rounded-full border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-900 transition hover:border-green-700; }
+  .pill-on { @apply border-green-700 bg-green-700 text-white; }
+  .btn-go { @apply inline-flex min-h-11 items-center rounded-xl bg-green-700 px-5 font-bold text-white transition hover:bg-green-800; }
+  .btn-ghost { @apply inline-flex min-h-11 items-center rounded-xl border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-900 transition hover:border-green-700; }
+  .card { @apply rounded-2xl border border-slate-200 bg-white p-5; }
+}
+
+button, a { transition: transform .12s ease, box-shadow .2s ease, background-color .2s ease, border-color .2s ease; }
+button:active, a.pill:active, a.btn-go:active, a.btn-ghost:active { transform: scale(.94); }
+.lift:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(15, 23, 42, .1); }
+.enter { animation: rise .35s ease both; }
+.pop { animation: pop .18s ease both; transform-origin: top right; }
+.pulse { animation: pulse .35s ease; }
+
+@keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes pop { from { opacity: 0; transform: translateY(-6px) scale(.97); } to { opacity: 1; transform: none; } }
+@keyframes pulse { 0% { transform: scale(1); } 40% { transform: scale(1.08); } 100% { transform: scale(1); } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after { animation: none !important; transition: none !important; }
+}
