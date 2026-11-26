@@ -36,13 +36,25 @@ export default function AppBrowser({ apps }: { apps: AppCard[] }) {
         <p className="mt-4 text-lg text-slate-600">
           Community-verified free and open-source alternatives to any paid app.
         </p>
-        <input
-          aria-label="Search apps"
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          placeholder="Search Photoshop, Notion, Canva..."
-          className="mt-7 min-h-[52px] w-full rounded-xl border border-slate-300 bg-white px-5 text-base outline-none focus:border-green-700"
-        />
+        <div className="relative mt-7">
+          <input
+            aria-label="Search apps"
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="Search Photoshop, Notion, Canva..."
+            className="min-h-[52px] w-full rounded-xl border border-slate-300 bg-white pl-5 pr-12 text-base outline-none focus:border-green-700"
+          />
+          {q && (
+            <button
+              type="button"
+              aria-label="Clear search"
+              onClick={() => setQ("")}
+              className="absolute right-2 top-2 flex h-9 w-9 items-center justify-center rounded-full text-xl text-slate-500 hover:bg-slate-100"
+            >
+              ×
+            </button>
+          )}
+        </div>
         <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-sm text-slate-600">
           <span>Popular:</span>
           {POPULAR.map((p) => (

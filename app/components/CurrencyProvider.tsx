@@ -64,6 +64,6 @@ export function useShowCurrency() {
 
 export function Price({ usd, inr }: { usd: number; inr: number }) {
   const { code } = useCurrency();
-  useShowCurrency();
+  
   return <>{formatAmount(code, toAmount(code, usd, inr))}</>;
 }

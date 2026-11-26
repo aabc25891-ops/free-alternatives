@@ -47,13 +47,25 @@ export default function Calculator({ apps }: { apps: CalcApp[] }) {
 
   return (
     <div>
-      <input
-        aria-label="Search paid apps"
-        value={q}
-        onChange={(e) => setQ(e.target.value)}
-        placeholder="Search your paid apps..."
-        className="mt-5 min-h-[52px] w-full rounded-xl border border-slate-300 bg-white px-5 text-base outline-none focus:border-green-700"
-      />
+      <div className="relative mt-5">
+        <input
+          aria-label="Search paid apps"
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          placeholder="Search your paid apps..."
+          className="min-h-[52px] w-full rounded-xl border border-slate-300 bg-white pl-5 pr-12 text-base outline-none focus:border-green-700"
+        />
+        {q && (
+          <button
+            type="button"
+            aria-label="Clear search"
+            onClick={() => setQ("")}
+            className="absolute right-2 top-2 flex h-9 w-9 items-center justify-center rounded-full text-xl text-slate-500 hover:bg-slate-100"
+          >
+            ×
+          </button>
+        )}
+      </div>
 
       <div className="mt-3 flex items-center justify-between text-sm text-slate-600">
         <span>{picked.length} selected</span>
