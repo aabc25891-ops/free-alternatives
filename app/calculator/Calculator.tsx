@@ -20,6 +20,15 @@ export default function Calculator({ apps }: { apps: App[] }) {
   const monthly = apps
     .filter((a) => selected.includes(a.id))
     .reduce((sum, a) => sum + price(a), 0);
+  const share = (platform: "whatsapp" | "x") => {
+    const text = `I could save ${money(monthly * 12)} per year by switching to free alternatives! Check yours:`;
+    const url = window.location.origin + "/calculator";
+    const link =
+      platform === "whatsapp"
+        ? `https://wa.me/?text=${encodeURIComponent(text + " " + url)}`
+        : `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+    window.open(link, "_blank", "noopener,noreferrer");
+  };  
 
   return (
     <div>
@@ -62,6 +71,22 @@ export default function Calculator({ apps }: { apps: App[] }) {
         <p className="text-4xl font-bold">{money(monthly * 12)}</p>
         <p className="text-sm">per year ({money(monthly)} per month)</p>
       </div>
+      {monthly > 0 && (
+        <div className="mt-4 flex flex-wrap justify-center gap-3">
+          <button
+            onClick={() => share("whatsapp")}
+            className="rounded-lg bg-white px-4 py-2 font-semibold text-gray-800 shadow"
+          >
+            Share on WhatsApp
+          </button>
+          <button
+            onClick={() => share("x")}
+            className="rounded-lg bg-white px-4 py-2 font-semibold text-gray-800 shadow"
+          >
+            Share on X
+          </button>
+        </div>
+      )}
     </div>
   );
 }
