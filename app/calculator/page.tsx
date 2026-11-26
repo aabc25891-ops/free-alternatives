@@ -5,12 +5,13 @@ import Calculator from "./Calculator";
 
 async function Loader() {
   const rows = await sql`
-    SELECT id, name, price_usd FROM apps
-    WHERE price_usd IS NOT NULL ORDER BY name`;
+    SELECT id, name, price_usd, price_inr FROM apps
+    WHERE price_usd IS NOT NULL AND price_inr IS NOT NULL ORDER BY name`;
   const apps = rows.map((r) => ({
     id: r.id as number,
     name: r.name as string,
     price_usd: Number(r.price_usd),
+    price_inr: Number(r.price_inr),
   }));
   return <Calculator apps={apps} />;
 }

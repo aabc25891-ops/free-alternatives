@@ -1,10 +1,7 @@
 "use client";
 import { useState } from "react";
 
-type App = { id: number; name: string; price_usd: number };
-
-// Change this number to the current dollar-to-rupee rate
-const USD_TO_INR = 88;
+type App = { id: number; name: string; price_usd: number; price_inr: number };
 
 export default function Calculator({ apps }: { apps: App[] }) {
   const [selected, setSelected] = useState<number[]>([]);
@@ -15,14 +12,14 @@ export default function Calculator({ apps }: { apps: App[] }) {
       s.includes(id) ? s.filter((x) => x !== id) : [...s, id]
     );
 
-  const money = (usd: number) =>
-    currency === "INR"
-      ? "₹" + Math.round(usd * USD_TO_INR).toLocaleString("en-IN")
-      : "$" + Math.round(usd).toLocaleString("en-US");
+  const price = (a: App) => (currency === "INR" ? a.price_inr : a.price_usd);
+  const money = (n: number) =>
+    (currency === "INR" ? "₹" : "$") +
+    Math.round(n).toLocaleString(currency === "INR" ? "en-IN" : "en-US");
 
   const monthly = apps
     .filter((a) => selected.includes(a.id))
-    .reduce((sum, a) => sum + a.price_usd, 0);
+    .reduce((sum, a) => sum + price(a), 0);
 
   return (
     <div>
@@ -55,7 +52,7 @@ export default function Calculator({ apps }: { apps: App[] }) {
               />
               <span className="font-semibold text-gray-900">{a.name}</span>
             </span>
-            <span className="text-sm text-gray-500">{money(a.price_usd)}/mo</span>
+            <span className="text-sm text-gray-500">{money(price(a))}/mo</span>
           </label>
         ))}
       </div>
