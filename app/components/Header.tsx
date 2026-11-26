@@ -5,7 +5,7 @@ import { CURRENCIES, type Code } from "@/lib/currency";
 import { useCurrency } from "./CurrencyProvider";
 
 export default function Header() {
-  const { code, setCode } = useCurrency();
+  const { code, setCode, showPicker } = useCurrency();
   const [open, setOpen] = useState(false);
 
   return (
@@ -17,7 +17,7 @@ export default function Header() {
         <nav className="flex flex-wrap items-center gap-2">
           <Link href="/" className="pill">Browse</Link>
           <Link href="/calculator" className="pill">Savings calculator</Link>
-          <div className="relative">
+          <div className={showPicker ? "relative" : "hidden"}>
             <button
               className="pill"
               onClick={() => setOpen(!open)}

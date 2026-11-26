@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { CurrencyProvider } from "./components/CurrencyProvider";
 import Header from "./components/Header";
+import { Analytics } from "@vercel/analytics/next";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -31,6 +32,7 @@ export default function RootLayout({
           <Header />
           {children}
         </CurrencyProvider>
+        <Analytics />
       </body>
     </html>
   );

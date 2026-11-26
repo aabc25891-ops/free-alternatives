@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { formatAmount, toAmount } from "@/lib/currency";
-import { useCurrency } from "./CurrencyProvider";
+import { useCurrency, useShowCurrency } from "./CurrencyProvider";
 
 export type CalcApp = {
   id: number;
@@ -13,6 +13,7 @@ export type CalcApp = {
 
 export default function Calculator({ apps }: { apps: CalcApp[] }) {
   const { code } = useCurrency();
+  useShowCurrency();
   const [picked, setPicked] = useState<number[]>([]);
   const [q, setQ] = useState("");
 
