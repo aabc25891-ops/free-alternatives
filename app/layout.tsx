@@ -15,6 +15,7 @@ export const metadata: Metadata = {
   },
   description:
     "Find free and open-source alternatives to paid apps. See what you can save every year.",
+  verification: { google: "1A-zESw98vZgifMEoRNZmFXdXsONgytiYE5Qr2D4lHs" },  
 };
 
 
