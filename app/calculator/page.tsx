@@ -4,13 +4,15 @@ import Calculator, { type CalcApp } from "@/app/components/Calculator";
 
 async function Loader() {
   const rows = await sql`
-    SELECT id, name, category, price_usd, price_inr FROM apps
+  SELECT id, name, category, domain, price_usd, price_inr FROM apps
+    
     WHERE price_usd IS NOT NULL AND price_inr IS NOT NULL
     ORDER BY name`;
   const apps: CalcApp[] = rows.map((r) => ({
     id: r.id as number,
     name: r.name as string,
     category: r.category as string,
+    domain: (r.domain as string | null) ?? null,
     usd: Number(r.price_usd),
     inr: Number(r.price_inr),
   }));

@@ -2,11 +2,13 @@
 import { useState } from "react";
 import { formatAmount, toAmount } from "@/lib/currency";
 import { useCurrency, useShowCurrency } from "./CurrencyProvider";
+import Logo from "./Logo";
 
 export type CalcApp = {
   id: number;
   name: string;
   category: string;
+  domain: string | null;
   usd: number;
   inr: number;
 };
@@ -90,7 +92,10 @@ export default function Calculator({ apps }: { apps: CalcApp[] }) {
               className={`card text-left ${on ? "pulse !border-green-700 !bg-green-50" : ""}`}
             >
               <div className="flex items-center justify-between gap-2">
-                <span className="font-bold">{a.name}</span>
+                <span className="flex items-center gap-3 font-bold">
+                  <Logo domain={a.domain} name={a.name} size={32} />
+                  {a.name}
+                </span>
                 <span className="text-sm text-slate-600">
                   {formatAmount(code, amount(a))}/mo
                 </span>
