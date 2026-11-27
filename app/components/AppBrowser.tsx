@@ -3,12 +3,14 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Price } from "./CurrencyProvider";
+import Logo from "./Logo";
 
 export type AppCard = {
   id: number;
   name: string;
   slug: string;
   category: string;
+  domain: string | null;
   usd: number | null;
   inr: number | null;
   count: number;
@@ -144,10 +146,16 @@ export default function AppBrowser({ apps }: { apps: AppCard[] }) {
                       i === active ? "bg-green-50" : "hover:bg-slate-50"
                     }`}
                   >
-                    <span className="min-w-0">
-                      <span className="block truncate font-semibold">{a.name}</span>
-                      <span className="block text-xs text-slate-500">{a.category}</span>
+                    <span className="flex min-w-0 items-center gap-3">
+                      <Logo domain={a.domain} name={a.name} size={32} />
+                      <span className="min-w-0">
+                        <span className="block truncate font-semibold">{a.name}</span>
+                        <span className="block text-xs text-slate-500">{a.category}</span>
+                      </span>
                     </span>
+                    
+                    
+                    
                     <span className="whitespace-nowrap rounded-full bg-green-100 px-3 py-1 text-xs font-bold text-green-800">
                       {plural(a.count)}
                     </span>
@@ -212,7 +220,10 @@ export default function AppBrowser({ apps }: { apps: AppCard[] }) {
                 )}
               </span>
             </div>
-            <div className="mt-4 text-lg font-bold">{a.name}</div>
+            <div className="mt-4 flex items-center gap-3">
+              <Logo domain={a.domain} name={a.name} size={40} />
+              <div className="text-lg font-bold">{a.name}</div>
+            </div>
             <div className="mt-1 text-sm text-slate-600">{plural(a.count)}</div>
             <div className="mt-4 text-sm font-bold text-green-700">
               See alternatives →

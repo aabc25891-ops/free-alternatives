@@ -6,6 +6,7 @@ import { sql } from "@/lib/db";
 import { Price } from "@/app/components/CurrencyProvider";
 import AlternativeList, { type Alt } from "@/app/components/AlternativeList";
 import type { Metadata } from "next";
+import Logo from "@/app/components/Logo";
 
 type Props = { params: Promise<{ slug: string }> };
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -22,7 +23,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 async function Content({ params }: Props) {
   const { slug } = await params;
   const apps = await sql`
-    SELECT id, name, price_usd, price_inr FROM apps WHERE slug = ${slug}`;
+    SELECT id, name, domain, price_usd, price_inr FROM apps WHERE slug = ${slug}`;
   if (apps.length === 0) notFound();
   const app = apps[0];
 
@@ -57,9 +58,19 @@ async function Content({ params }: Props) {
 
   return (
     <div className="enter">
-      <h1 className="mt-2 text-3xl font-extrabold tracking-tight sm:text-5xl">
-        Free alternatives to {app.name as string}
-      </h1>
+      <div className="mt-2 flex items-center gap-4">
+        <Logo
+          domain={(app.domain as string | null) ?? null}
+          name={app.name as string}
+          size={56}
+        />
+        <h1 className="text-3xl font-extrabold tracking-tight sm:text-5xl">
+          Free alternatives to {app.name as string}
+        </h1>
+      </div>
+      
+      
+      
       <p className="mt-3 text-lg text-slate-600">
         {hasPrice ? (
           <>

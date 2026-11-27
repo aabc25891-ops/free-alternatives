@@ -4,7 +4,7 @@ import AppBrowser, { type AppCard } from "./components/AppBrowser";
 
 async function Loader() {
   const rows = await sql`
-    SELECT a.id, a.name, a.slug, a.category, a.price_usd, a.price_inr,
+    SELECT a.id, a.name, a.slug, a.category, a.domain, a.price_usd, a.price_inr,
       COUNT(alt.id)::int AS alt_count
     FROM apps a
     LEFT JOIN alternatives alt ON alt.app_id = a.id
@@ -16,6 +16,7 @@ async function Loader() {
     name: r.name as string,
     slug: r.slug as string,
     category: r.category as string,
+    domain: (r.domain as string | null) ?? null,
     usd: r.price_usd == null ? null : Number(r.price_usd),
     inr: r.price_inr == null ? null : Number(r.price_inr),
     count: r.alt_count as number,

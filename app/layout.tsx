@@ -22,6 +22,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
+  
 }: {
   children: React.ReactNode;
 }) {
@@ -31,6 +32,16 @@ export default function RootLayout({
         <CurrencyProvider>
           <Header />
           {children}
+          <footer className="border-t border-slate-200 py-6 text-center text-sm text-slate-500">
+            <a
+              href="https://logo.dev"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline"
+            >
+              Logos provided by Logo.dev
+            </a>
+          </footer>
         </CurrencyProvider>
         <Analytics />
       </body>

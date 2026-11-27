@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { castVote } from "@/app/actions";
+import Logo, { domainFromUrl } from "./Logo";
 
 export type Alt = {
   id: number;
@@ -57,7 +58,10 @@ export default function AlternativeList({
         {shown.map((a) => (
           <div key={a.id} className="card flex flex-col">
             <div className="flex items-start justify-between gap-2">
-              <h3 className="text-xl font-bold">{a.name}</h3>
+              <div className="flex min-w-0 items-center gap-3">
+                <Logo domain={domainFromUrl(a.url)} name={a.name} size={44} />
+                <h3 className="text-xl font-bold">{a.name}</h3>
+              </div>
               <span className="whitespace-nowrap rounded-full bg-green-100 px-3 py-1 text-xs font-bold text-green-800">
                 {a.open_source ? "Open source" : a.no_signup ? "No sign-up" : "Free tier"}
               </span>
