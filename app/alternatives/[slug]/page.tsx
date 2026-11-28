@@ -17,6 +17,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `Free alternatives to ${name}`,
     description: `Community-verified free and open-source alternatives to ${name}. See what you can save every year.`,
+    alternates: { canonical: `/alternatives/${slug}` },
   };
 }
 

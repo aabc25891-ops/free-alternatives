@@ -1,6 +1,10 @@
 import { Suspense } from "react";
 import { sql } from "@/lib/db";
 import Calculator, { type CalcApp } from "@/app/components/Calculator";
+export const metadata = {
+  title: "Subscription savings calculator",
+  alternates: { canonical: "/calculator" },
+};
 
 async function Loader() {
   const rows = await sql`

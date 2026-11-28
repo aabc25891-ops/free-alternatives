@@ -12,7 +12,7 @@ export default function Header() {
     <header className="border-b border-slate-200 bg-white">
       <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-5 py-3">
         <Link href="/" className="text-xl font-extrabold">
-          Free<span className="text-green-700">Alt</span>
+          Ditch<span className="text-green-700">Paid</span>
         </Link>
         <nav className="flex flex-wrap items-center gap-2">
           <Link href="/" className="pill">Browse</Link>

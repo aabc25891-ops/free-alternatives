@@ -4,16 +4,20 @@ import "./globals.css";
 import { CurrencyProvider } from "./components/CurrencyProvider";
 import Header from "./components/Header";
 import { Analytics } from "@vercel/analytics/next";
-
+import { SITE_NAME, SITE_URL } from "@/lib/site";
 const inter = Inter({ subsets: ["latin"] });
 
 
 
 export const metadata: Metadata = {
+  
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: "Free Alternatives to Paid Software",
-    template: "%s | FreeAlt",
+    default: `${SITE_NAME}: Free Alternatives to Paid Software`,
+    template: `%s | ${SITE_NAME}`,
   },
+  
+  
   description:
     "Find free and open-source alternatives to paid apps. See what you can save every year.",
   verification: { google: "1A-zESw98vZgifMEoRNZmFXdXsONgytiYE5Qr2D4lHs" },  

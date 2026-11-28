@@ -1,7 +1,10 @@
 import { Suspense } from "react";
 import { sql } from "@/lib/db";
 import AppBrowser, { type AppCard } from "./components/AppBrowser";
-
+export const metadata = {
+  title: "Subscription savings calculator",
+  alternates: { canonical: "/calculator" },
+};
 async function Loader() {
   const rows = await sql`
     SELECT a.id, a.name, a.slug, a.category, a.domain, a.price_usd, a.price_inr,
